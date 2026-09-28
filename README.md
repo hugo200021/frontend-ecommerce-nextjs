@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🛒 E-Commerce App - Frontend en Next.js
 
-## Getting Started
+Aplicación de comercio electrónico desarrollada con **Next.js (App Router)**, **TypeScript** y **Tailwind CSS**, diseñada como caso de estudio para consumir una API REST segura desarrollada en **Laravel 12 + Swagger + Stripe**.
 
-First, run the development server:
+---
 
-```bash
+## ⚙️ Configuración de Variables de Entorno (.env.example)
+
+Para conectar el frontend con la API en Laravel Herd o local, crea un archivo `.env.local` en la raíz del proyecto basándote en la siguiente plantilla:
+
+NEXT_PUBLIC_API_URL=http://ecommerce-api-segura.test
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_tu_llave_publica
+
+---
+
+## 🚀 Pasos para Ejecutar el Proyecto
+
+### 1. Requisitos Previos
+* **Node.js**: v18.0.0 o superior.
+* **npm** o **yarn**.
+* **Backend de Laravel**: Ejecutándose vía Laravel Herd en http://ecommerce-api-segura.test o mediante `php artisan serve` en http://localhost:8000.
+
+### 2. Instalación de Dependencias
+Clona el repositorio e instala los paquetes necesarios:
+
+git clone https://github.com/hugo200021/frontend-ecommerce-nextjs.git
+cd frontend-ecommerce-nextjs
+npm install
+
+### 3. Configuración del Entorno Local
+Copia la plantilla de variables de entorno y ajusta los valores si es necesario:
+
+cp .env.example .env.local
+
+### 4. Iniciar el Servidor de Desarrollo
+Ejecuta el servidor local de Next.js:
+
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abre tu navegador e ingresa a http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🗺️ Rutas Implementadas
 
-## Learn More
+| Ruta | Descripción | Tipo de Componente / Técnica |
+| :--- | :--- | :--- |
+| `/` | **Catálogo de Productos:** Consulta asíncrona a la API de Laravel (`GET /api/products`) con esqueletos de carga mediante `<Suspense>`. | Server Component (`ProductList`) |
+| `/products/[id]` | **Detalle de Producto:** Vista individual dinámica para consultar especificaciones de un producto. | Dynamic Route (`/products/[id]`) |
+| `/cart` | **Carrito de Compras:** Gestión local de artículos, cálculo de totales y persistencia de estado. | Client Component (`CartContext`) |
+| `/login` | **Autenticación (Login):** Formulario de inicio de sesión e integración de sesión vía JWT. | Server Action / Form |
+| `/register` | **Autenticación (Registro):** Formulario para registrar nuevos usuarios en la API de Laravel. | Server Action / Form |
+| `/checkout` | **Proceso de Pago:** Confirmación de la orden e integración con pasarela de pago (Stripe). | Protected Route |
+| `/orders` | **Historial de Compras:** Consulta y listado de órdenes procesadas y confirmadas del usuario. | Protected Route |
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🛡️ Manejo de Errores y Rendimiento
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+* **`loading.tsx`:** Proporciona retroalimentación visual instantánea mientras los Server Components obtienen los datos.
+* **`error.tsx`:** Captura excepciones de red o servidor de forma resiliente, permitiendo la recuperación sin romper la interfaz.
+* **Revalidación:** Uso de `revalidatePath('/orders')` tras completar una compra para mantener los datos del historial actualizados.
